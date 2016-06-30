@@ -3,13 +3,18 @@
 # This script creates a new bash scripts, sets permissions and more
 
 script_name=$1
+script_path=$2
 
 if [[ ! $script_name ]]; then
    echo 'You should set file name to create a file'
    exit 1
 fi
 
-bindir="${HOME}/projects/shell_scripts/creator/bin"
+if [[ ! -d "$script_path" ]]; then
+  script_path="."
+fi
+
+bindir="${script_path}/bin"
 filename="${bindir}/${script_name}.sh"
 
 # Check if file with this name already exists
@@ -34,8 +39,7 @@ if [[ ! -d $bindir ]]; then
    fi
 fi
 
-
-echo "Script with name ${filename} already exists"
+echo "Script with name ${filename} was created"
 
 touch "$filename"
 chmod u+x "$filename"
