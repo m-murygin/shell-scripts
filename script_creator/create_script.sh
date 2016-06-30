@@ -3,13 +3,19 @@
 # This script creates a new bash scripts, sets permissions and more
 
 script_name=$1
-script_path=$2
 
 if [[ ! $script_name ]]; then
    echo 'You should set file name to create a file'
    exit 1
 fi
 
+# Check if file exists in PATH
+if type "$script_name"; then
+   echo "There is already a command with name ${filename}"
+   exit 1
+fi
+
+script_path=$2
 if [[ ! -d "$script_path" ]]; then
   script_path="."
 fi
@@ -20,12 +26,6 @@ filename="${bindir}/${script_name}.sh"
 # Check if file with this name already exists
 if [[ -e $filename ]]; then
   echo "File with this name is already exist"
-fi
-
-# Check if file exists in PATH
-if type "$filename"; then
-   echo "There is already a command with name ${filename}"
-   exit 1
 fi
 
 # Check bin directory exist
