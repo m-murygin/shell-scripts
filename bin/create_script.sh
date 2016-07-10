@@ -10,7 +10,7 @@ if [[ ! $script_name ]]; then
 fi
 
 # Check if file exists in PATH
-if type $script_name; then
+if type $script_name 2> /dev/null; then
    echo "There is already a command with name ${filename}"
    exit 1
 fi
