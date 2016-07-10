@@ -10,7 +10,7 @@ if [[ ! $script_name ]]; then
 fi
 
 # Check if file exists in PATH
-if type $script_name 2> /dev/null; then
+if type $script_name 1>/dev/null 2>&1; then
    echo "There is already a command with name ${filename}"
    exit 1
 fi
@@ -43,5 +43,6 @@ echo "Script with name ${filename} was created"
 
 touch "$filename"
 chmod u+x "$filename"
+echo "#!/bin/bash" > "$filename"
 
 exit 0
