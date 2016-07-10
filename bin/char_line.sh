@@ -9,6 +9,12 @@ if [[ ! $length ]]; then
     exit 1
 fi
 
+# check that first argument is a number
+if [[ ! $length =~ ^[0-9]+$ ]]; then
+    echo "Length has to be a number" >&2
+    exit 1
+fi
+
 char="-"
 if [[ $2 ]]; then
     char="$2"
