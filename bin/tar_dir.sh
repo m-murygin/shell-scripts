@@ -35,7 +35,7 @@ else
 	tarfile="$1"
 fi
 
-case $tarfile in in
+case $tarfile in
 	*.tgz|*.gz|*.gzip)
 		zip="z"
 		echo "Using gzip" >&2;;
@@ -59,7 +59,7 @@ if [[ $dir ]]; then
 	command="${command} ${dir}"
 fi
 
-if ! command; then
+if ! $command; then
 	echo "Error: tar exited with status $?" >&2
 	exit 4
 fi
