@@ -4,7 +4,7 @@ hidden_number=$(($RANDOM % 100))
 
 echo "Start game"
 
-guess=-1
+guess=
 
 until [[ $guess -eq $hidden_number ]]; do
     read -r -p "Try to guess number between 0 and 99: " guess
