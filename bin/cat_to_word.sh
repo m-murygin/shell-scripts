@@ -19,9 +19,9 @@ while read -r; do
 		else 
 			continue
 		fi
-	else
-		echo "$REPLY"
 	fi
+
+	echo "$REPLY"
 done < $1
 
 exit 0
