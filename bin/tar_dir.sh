@@ -25,13 +25,12 @@ if [[ -d $1 ]]; then
 		echo "Need name of file or directory to create as second argument" >&2
 		exit 1
 	fi
-
-	dir_name="$1"
+	dir="$1"
 	tarfile="$2"
 else
 	# It's a file, extract
 	operation="x"
-	dir_name=""
+	dir=""
 	tarfile="$1"
 fi
 
@@ -63,7 +62,6 @@ if ! $command; then
 	echo "Error: tar exited with status $?" >&2
 	exit 4
 fi
-
 echo 'OK'
 exit 0
 
