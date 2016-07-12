@@ -3,7 +3,7 @@
 # Changes file extension
 # Usage change_extension.sh from_ext to_ext
 
-[[ $# -ne 2 ]] && { echo "Need exactly two arguments" >&2; exit 1 }
+[[ $# -ne 2 ]] && { echo "Need exactly two arguments" >&2; exit 1; }
 
 if [[ $# -ne 2 ]]; then
 	echo "Need exactly two arguments" >&2
