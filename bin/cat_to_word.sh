@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# cats all lines before target, displays the rest part of the input stream
+# 
+# Use: ./cat_to_word.sh file_name cat_word
+
 if [[ ! $1 ]]; then
 	echo "You should provide target file" >&2
 	exit 1
@@ -11,7 +15,7 @@ if [[ ! $2 ]]; then
 fi
 
 found=
-while read -r; do
+while read -r || [[ $REPLY ]]; do
 	if [[ ! $found ]]; then
 		if [[ $REPLY =~ $2 ]]; then
 			echo "$REPLY"
@@ -22,6 +26,6 @@ while read -r; do
 	fi
 
 	echo "$REPLY"
-done < $1
+done < "$1"
 
 exit 0
