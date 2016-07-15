@@ -6,6 +6,12 @@ host_name=${host_name,,}
 bucket="$host_name"
 datastore="isolated_${host_name}"
 
+function string_replace {
+     #DOC: "${string/match/replace}"
+     string="$1"
+     echo "${string/$2/$3}"
+ }
+
 isolated_config=$(cat <<EOF
 {
     "isolated": {
@@ -19,4 +25,7 @@ isolated_config=$(cat <<EOF
 EOF
 )
 
-echo "$isolated_config" | m4 -DBUCKET="$bucket" -DDATASTORE="$datastore"
+isolated_config=$(string_replace "$isolated_config" BUCKET "$bucket")
+isolated_config=$(string_replace "$isolated_config" DATASTORE "$datastore")
+
+echo "$isolated_config"
