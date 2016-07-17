@@ -1,12 +1,29 @@
 #!/bin/bash
 
-date=$(date)
+declare -r date=$(date)
 
 # get the topic
-topic="$1"
+declare -r topic="$1"
 
-# filename to write to
-filename="./${topic}notes.txt"
+# dir to store files to write to
+notedir="${HOME}"
+[[ $NOTEDIR ]] && notedir="${NOTEDIR}"
+
+if [[ ! -d $notedir ]]; then
+    mkdir "${notedir}" 2> /dev/null || {
+        echo "Cannot make directory ${notedir}" 1>&2;
+        exit 1;
+    }
+fi
+
+declare -r filename="${notedir}/${topic}notes.txt"
+
+if [[ ! -f $filename ]]; then
+    touch "${filename}" 2> /dev/null || {
+        echo "Cannot create file with name ${filename}" 1>&2;
+        exit 1;
+    }
+fi
 
 # Ask user for input
 read -p "Your note:" note
