@@ -2,7 +2,23 @@
 
 # This script creates a new bash scripts, sets permissions and more
 
-script_name=$1
+declare folder_name="${HOME}/bin"
+
+while getopts ":f:" opt; do
+  case $opt in 
+    f)
+      folder_name="$OPTARG"
+      ;;
+    \?)
+      echo "Unknown option ${OPTARG}" >&2
+      exit 1
+      ;;
+  esac
+done
+
+shift $(( OPTIND - 1 ))
+
+script_name="$1"
 
 if [[ ! $script_name ]]; then
    echo 'You should set file name to create a file'
@@ -15,13 +31,7 @@ if type $script_name 1>/dev/null 2>&1; then
    exit 1
 fi
 
-script_path=$2
-if [[ ! -d $script_path ]]; then
-  script_path="."
-fi
-
-bindir="${script_path}/bin"
-filename="${bindir}/${script_name}.sh"
+filename="${folder_name}/${script_name}"
 
 # Check if file with this name already exists
 if [[ -e $filename ]]; then
@@ -29,20 +39,21 @@ if [[ -e $filename ]]; then
 fi
 
 # Check bin directory exist
-if [[ ! -d $bindir ]]; then
+if [[ ! -d $folder_name ]]; then
    #if not: create bin directory
-   if mkdir "$bindir"; then
-       echo "created ${bindir}"
+   if mkdir "$folder_name"; then
+       echo "created ${folder_name}"
    else
-       echo "Could not create ${bindir}"
+       echo "Could not create ${folder_name}"
        exit 1
    fi
 fi
 
-echo "Script with name ${filename} was created"
 
 touch "$filename"
 chmod u+x "$filename"
 echo "#!/bin/bash" > "$filename"
+
+echo "Script with name ${filename} was created"
 
 exit 0
