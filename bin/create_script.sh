@@ -1,59 +1,113 @@
 #!/bin/bash
 
-# This script creates a new bash scripts, sets permissions and more
+usage() {
+cat <<END
+  Creates a new shell script. Sets permission and adds standart header
+Usage;
+  create_script [-h] [-d destination] name
+Args:
+  -h  show help
+  -a  add usage, error, and getopt
+  -d: file destination folder [default $HOME/bin]
+END
+}
+
+error () {
+  echo -e "Error: ${1}\n"
+  usage
+  exit $2
+} >&2
 
 declare folder_name="${HOME}/bin"
 
-while getopts ":f:" opt; do
-  case $opt in 
-    f)
+while getopts ":had:" opt; do
+  case $opt in
+    h)
+      usage
+      exit 0
+      ;;
+    d)
       folder_name="$OPTARG"
       ;;
-    \?)
-      echo "Unknown option ${OPTARG}" >&2
-      exit 1
+    a)
+      advanced_header=true 
+      ;;
+    :)
+      error "Option -${OPTARG} is missing an argument" 1
+      ;;
+    ?)
+      error "Unknown option ${OPTARG}" 1
       ;;
   esac
 done
 
 shift $(( OPTIND - 1 ))
 
-script_name="$1"
+declare -r script_name="$1"
 
 if [[ ! $script_name ]]; then
-   echo 'You should set file name to create a file'
-   exit 1
+  error "You should set file name to create a file" 1
 fi
 
 # Check if file exists in PATH
-if type $script_name 1>/dev/null 2>&1; then
-   echo "There is already a command with name ${filename}"
-   exit 1
+if type "$script_name" 1>/dev/null 2>&1; then
+  error "There is already a command with name ${filename}" 1
 fi
 
-filename="${folder_name}/${script_name}"
+if [[ ! $folder_name = "." && ! -d $folder_name ]]; then
+  error "The destination folder ${folder_name} do not exists" 1
+fi
 
-# Check if file with this name already exists
+declare -r filename="${folder_name}/${script_name}"
+
 if [[ -e $filename ]]; then
-  echo "File with this name is already exist"
+  error "File with this name is already exist" 1
 fi
-
-# Check bin directory exist
-if [[ ! -d $folder_name ]]; then
-   #if not: create bin directory
-   if mkdir "$folder_name"; then
-       echo "created ${folder_name}"
-   else
-       echo "Could not create ${folder_name}"
-       exit 1
-   fi
-fi
-
 
 touch "$filename"
 chmod u+x "$filename"
-echo "#!/bin/bash" > "$filename"
+echo -e "#!/bin/bash\n" > "$filename"
+
+if [[ $advanced_header ]]; then
+  content=$(cat <<EOF
+usage() {
+cat <<END
+Description:
+  
+Usage;
+  
+Args:
+  -h  show help
+END
+}
+
+error () {
+  echo -e "Error: \${1}\n" 
+  usage
+  exit $2
+} >&2
+
+while getopts ":h" opt; do
+  case $opt in
+    h)
+      usage
+      exit 0
+      ;;
+    :)
+      error "Option -${OPTARG} is missing an argument" 1
+      ;;
+    ?)
+      error "Unknown option ${OPTARG}" 1
+      ;;
+  esac
+done
+
+EOF
+  )
+  echo "$content" >> "$filename"
+fi
 
 echo "Script with name ${filename} was created"
+subl "$filename"
 
 exit 0
