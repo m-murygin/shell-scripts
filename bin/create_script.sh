@@ -3,7 +3,7 @@
 usage() {
 cat <<END
   Creates a new shell script. Sets permission and adds standart header
-Usage;
+Usage:
   create_script [-h] [-u] [-e] [-g] [-d destination] name
 Args:
   -h  show help
