@@ -4,10 +4,12 @@ usage() {
 cat <<END
   Creates a new shell script. Sets permission and adds standart header
 Usage;
-  create_script [-h] [-d destination] name
+  create_script [-h] [-u] [-e] [-g] [-d destination] name
 Args:
   -h  show help
-  -a  add usage, error, and getopt
+  -u  add usage function
+  -e  add error function
+  -g  add getopts
   -d: file destination folder [default $HOME/bin]
 END
 }
@@ -20,7 +22,7 @@ error () {
 
 declare folder_name="${HOME}/bin"
 
-while getopts ":had:" opt; do
+while getopts ":had:uge" opt; do
   case $opt in
     h)
       usage
@@ -29,8 +31,14 @@ while getopts ":had:" opt; do
     d)
       folder_name="$OPTARG"
       ;;
-    a)
-      advanced_header=true 
+    u)
+      add_usage=true 
+      ;;
+    g)
+      add_getopts=true 
+      ;;
+    e)
+      add_error=true 
       ;;
     :)
       error "Option -${OPTARG} is missing an argument" 1
@@ -66,13 +74,15 @@ fi
 
 touch "$filename"
 chmod u+x "$filename"
-echo -e "#!/bin/bash\n" > "$filename"
 
-if [[ $advanced_header ]]; then
+# Fill file content
+echo "#!/bin/bash" > "$filename"
+
+if [[ $add_usage ]]; then
   content=$(cat <<EOF
+
 usage() {
 cat <<END
-Description:
   
 Usage;
   
@@ -80,12 +90,26 @@ Args:
   -h  show help
 END
 }
+EOF
+  )
+  echo "$content" >> "$filename"
+fi
+
+if [[ $add_error ]]; then
+  content=$(cat <<EOF
 
 error () {
   echo -e "Error: \${1}\n" 
   usage
   exit $2
 } >&2
+EOF
+  )
+  echo "$content" >> "$filename"
+fi
+
+if [[ $add_getopts ]]; then
+  content=$(cat <<EOF
 
 while getopts ":h" opt; do
   case $opt in
@@ -101,7 +125,6 @@ while getopts ":h" opt; do
       ;;
   esac
 done
-
 EOF
   )
   echo "$content" >> "$filename"
