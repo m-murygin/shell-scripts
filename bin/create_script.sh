@@ -84,7 +84,7 @@ if [[ $add_usage ]]; then
 usage() {
 cat <<END
   
-Usage;
+Usage:
   
 Args:
   -h  show help
