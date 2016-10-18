@@ -6,8 +6,7 @@ declare -r date=$(date)
 declare -r topic="$1"
 
 # dir to store files to write to
-notedir="${HOME}/notes"
-[[ $NOTEDIR ]] && notedir="${NOTEDIR}"
+notedir=${NOTEDIR:-${HOME}/notes}
 
 if [[ ! -d $notedir ]]; then
     mkdir "${notedir}" 2> /dev/null || {
